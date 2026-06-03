@@ -5,22 +5,12 @@ import picture2 from "../../../public/picture/Vector (15).png";
 import picture3 from "../../../public/picture/Vector (16).png";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { HiOutlineMail } from "react-icons/hi";
-import { RiSearchLine } from "react-icons/ri";
 
 export default function Header({ balance }: { balance: number }) {
   return (
     <div className="flex flex-col gap-y-6">
       <div className="flex justify-between items-center">
-        <h6 className="text-yellow1 text-2xl font-semibold">
-          Crypto Dashboard
-        </h6>
-        {/* <div className="relative">
-          <RiSearchLine className="absolute top-3 left-5 text-gray4" />
-          <input
-            placeholder="Search"
-            className="bg-gray2 text-white text-start cursor-pointer rounded-2xl py-2 px-12 w-120 outline-0"
-          />
-        </div> */}
+        <h6 className="text-yellow1 text-2xl font-semibold">Crypto Market</h6>
         <div className="flex items-center gap-x-7">
           <div className="flex gap-x-4">
             <HiOutlineMail className="text-white size-5 cursor-pointer" />

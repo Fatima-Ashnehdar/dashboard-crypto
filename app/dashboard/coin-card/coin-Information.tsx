@@ -12,14 +12,14 @@ import picture3 from "../../../public/picture/graph.png";
 import picture4 from "../../../public/picture/Vector 14.png";
 import CoinCard from "./coin-card";
 export default function CoinInformation({
-  handleMarketAction,
+  handleMarket,
   balance,
   purchasedCurrency,
 }: any) {
   const [coins, setCoins] = useState([
     {
       id: 1,
-      owned: 0,
+      number: 0,
       digitalCurrency: "Bitcoin (BTC)",
       icon: (
         <BsCurrencyBitcoin className="text-white bg-orange-500 size-5 rounded-full px-1" />
@@ -30,7 +30,7 @@ export default function CoinInformation({
     },
     {
       id: 2,
-      owned: 0,
+      number: 0,
       digitalCurrency: "Tether",
       icon: (
         <SiTether className="text-white bg-green-400 size-5 rounded-full px-1" />
@@ -41,7 +41,7 @@ export default function CoinInformation({
     },
     {
       id: 4,
-      owned: 0,
+      number: 0,
       digitalCurrency: "Ethereum (ETH)",
       icon: <FaEthereum className="bg-white size-5 px-1.5 rounded-full" />,
       price: 2132.4,
@@ -51,7 +51,7 @@ export default function CoinInformation({
 
     {
       id: 5,
-      owned: 0,
+      number: 0,
       digitalCurrency: "Solana (SOL)",
       icon: (
         <SiSolana className="bg-gray-900 text-green-300 rounded-full px-2 size-6" />
@@ -62,7 +62,7 @@ export default function CoinInformation({
     },
     {
       id: 6,
-      owned: 0,
+      number: 0,
       digitalCurrency: "Cardano (ADA)",
       icon: <SiCardano className="text-blue-800 size-5" />,
       price: 0.85,
@@ -71,7 +71,7 @@ export default function CoinInformation({
     },
     {
       id: 3,
-      owned: 0,
+      number: 0,
       digitalCurrency: "Binance",
       icon: (
         <SiBinance className="text-orange-400 bg-gray-900 size-5 rounded-full px-1" />
@@ -82,33 +82,15 @@ export default function CoinInformation({
     },
   ]);
 
-  // PRICE CHANGE
-  // useEffect(() => {
-  //   const timeChangePrice = setInterval(() => {
-  //     setCoins((prevCoins) =>
-  //       prevCoins.map((coin) => {
-  //         const randomPrice = Math.random() * 2 - 0.1;
-  //         const newPrice = Math.max(1, coin.price + randomPrice);
-  //         return {
-  //           ...coin,
-  //           prevPrice: coin.price,
-  //           price: Number(newPrice.toFixed(2)),
-  //         };
-  //       }),
-  //     );
-  //   }, 2000);
-  //   return () => clearInterval(timeChangePrice);
-  // }, []);
   useEffect(() => {
     const timeChangePrice = setInterval(() => {
       setCoins((prevCoins) => {
-        let totalNewCryptoValue = 0;
+        let totalCryptoNewPrice = 0;
         const updatedCoins = prevCoins.map((coin) => {
           const randomPrice = Math.random() * 2 - 0.5;
-          const newPrice = Math.max(1, coin.price + randomPrice);
+          const newPrice = Math.max(2, coin.price + randomPrice);
 
-          // محاسبه ارزش جدید سکه‌هایی که کاربر از این ارز دارد
-          totalNewCryptoValue += coin.owned * newPrice;
+          totalCryptoNewPrice += coin.number * newPrice;
 
           return {
             ...coin,
@@ -117,84 +99,47 @@ export default function CoinInformation({
           };
         });
 
-        // مابه‌تفاوت ارزش جدید و قدیم ارزهای کاربر را به متغیر اصلی اضافه می‌کنیم
-        const difference = totalNewCryptoValue - purchasedCurrency;
-        handleMarketAction(0, difference);
+        const difference = totalCryptoNewPrice - purchasedCurrency;
+        handleMarket(0, difference);
 
         return updatedCoins;
       });
     }, 2000);
     return () => clearInterval(timeChangePrice);
-  }, [purchasedCurrency]); // وابستگی به purchasedCurrency اضافه شد
+  }, [purchasedCurrency]);
 
   // MARKET CRASH
-  useEffect(() => {
-    const marketCrash = setInterval(() => {
-      // alert("🚨MARKET CRASH");
-      setCoins((prevCoins) =>
-        prevCoins.map((coin) => {
-          return {
-            ...coin,
-            prevPrice: coin.price,
-            price: Number(coin.price * 0.8),
-          };
-        }),
-      );
-    }, 30000);
-
-    return () => clearInterval(marketCrash);
-  }, []);
-
   // useEffect(() => {
   //   const marketCrash = setInterval(() => {
-  //     setCoins((prevCoins) => {
-  //       let totalNewCryptoValue = 0;
-
-  //       const updatedCoins = prevCoins.map((coin) => {
-  //         const newPrice = coin.price * 0.8;
-  //         totalNewCryptoValue += coin.owned * newPrice;
-
+  //     alert("🚨MARKET CRASH");
+  //     setCoins((prevCoins) =>
+  //       prevCoins.map((coin) => {
   //         return {
   //           ...coin,
   //           prevPrice: coin.price,
-  //           price: Number(newPrice.toFixed(2)),
+  //           price: Number(coin.prevPrice - 10.8),
   //         };
-  //       });
-
-  //       // دارایی کاربر بعد از کرش شدیداً کم می‌شود
-  //       const difference = totalNewCryptoValue - purchasedCurrency;
-  //       onMarketAction(0, difference);
-
-  //       return updatedCoins;
-  //     });
+  //       }),
+  //     );
   //   }, 30000);
 
   //   return () => clearInterval(marketCrash);
-  // }, [purchasedCurrency]);
+  // }, []);
 
   // BUY COIN
   const buyCoin = (id: number, price: number) => {
-    if (balance >= price) {
-      handleMarketAction(-price, price);
-      setCoins((prev) =>
-        prev.map((a) => (a.id === id ? { ...a, owned: a.owned + 1 } : a)),
-      );
-    } else {
-      alert("موجودی کیف پول شما کافی نمی باشد.");
-    }
+    handleMarket(-price, price);
+    setCoins((prev) =>
+      prev.map((a) => (a.id === id ? { ...a, number: a.number + 1 } : a)),
+    );
   };
 
   // SELL COIN
   const sellCoin = (id: number, price: number) => {
-    const coin = coins.find((c) => c.id === id);
-    if (coin && coin.owned > 0) {
-      handleMarketAction(price, -price);
-      setCoins((prev) =>
-        prev.map((b) => (b.id === id ? { ...b, owned: b.owned - 1 } : b)),
-      );
-    } else {
-      alert("!ابتدا باید این ارز را خریداری کنید");
-    }
+    handleMarket(price, -price);
+    setCoins((prev) =>
+      prev.map((b) => (b.id === id ? { ...b, number: b.number - 1 } : b)),
+    );
   };
 
   return (

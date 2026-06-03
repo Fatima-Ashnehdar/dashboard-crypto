@@ -38,7 +38,7 @@ export default function CoinCard(props: {
             SELL
           </button>
         </div>
-        <div className="">
+        <div>
           <button
             onClick={props.onBuy}
             className="bg-[#51cf6640] text-[#37b24d] rounded-md text-sm text-center font-bold px-6 py-1.5 cursor-pointer"

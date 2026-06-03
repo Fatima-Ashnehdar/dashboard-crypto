@@ -14,6 +14,7 @@ export default function Portfolio(props: {
   return (
     <div className="bg-gray2 flex flex-col gap-y-4 rounded-2xl py-5 px-6 w-full">
       <p className="text-gray-400 text-sm">YOUR WALLET</p>
+      {/* <p className="text-white">{`${totalCoins.toFixed(2)}`}</p> */}
       <div>
         <div className="border-b border-gray-600 flex gap-x-2 pb-2">
           <p className=" text-gray-300 font-semibold">INITIAL BALANCE:</p>
