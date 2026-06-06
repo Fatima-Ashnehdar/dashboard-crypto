@@ -1,11 +1,13 @@
 import Image, { StaticImageData } from "next/image";
 import { ReactNode } from "react";
 
+import { ResponsiveContainer, AreaChart, Area, YAxis } from "recharts";
 export default function CoinCard(props: {
   key: number;
   digitalCurrency: string;
   price: number;
   prevPrice: number;
+  chart: { pv: number }[];
   picture: StaticImageData;
   icon: ReactNode;
   onBuy: () => void;
@@ -15,6 +17,10 @@ export default function CoinCard(props: {
   const priceColor = changeColor
     ? "text-green-400 text-2xl font-semibold"
     : "text-red-400 text-2xl font-semibold";
+  const chartColor = changeColor ? "#4ade80" : "#f87171";
+  const fillColor = changeColor
+    ? "rgba(74, 222, 128, 0.15)"
+    : "rgba(248, 113, 113, 0.15)";
   return (
     <div className="bg-gray1 rounded-2xl px-5 py-5 flex flex-col gap-y-4">
       <div>
@@ -27,7 +33,21 @@ export default function CoinCard(props: {
       </div>
       <div className="flex items-center justify-between">
         <p className={`${priceColor}`}>${props.price.toFixed(2)}</p>
-        <Image src={props.picture} alt="Chart Picture" />
+        <div className="w-32 h-14">
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={props.chart}>
+              <YAxis domain={["dataMin - 1", "dataMax + 1"]} hide={true} />
+              <Area
+                type="monotone"
+                dataKey="pv"
+                stroke={chartColor}
+                strokeWidth={2}
+                fill={fillColor}
+                dot={false}
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
       </div>
       <div className="flex justify-between">
         <div>

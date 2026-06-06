@@ -27,6 +27,7 @@ export default function CoinInformation({
       price: 6412.2,
       prevPrice: 6412.2,
       picture: picture3,
+      chart: Array(15).fill({ pv: 6412.2 }),
     },
     {
       id: 2,
@@ -38,6 +39,7 @@ export default function CoinInformation({
       price: 180,
       prevPrice: 180,
       picture: picture4,
+      chart: Array(15).fill({ pv: 180 }),
     },
     {
       id: 4,
@@ -47,6 +49,7 @@ export default function CoinInformation({
       price: 2132.4,
       prevPrice: 2132.4,
       picture: picture1,
+      chart: Array(15).fill({ pv: 2132.4 }),
     },
 
     {
@@ -59,6 +62,7 @@ export default function CoinInformation({
       price: 142,
       prevPrice: 142,
       picture: picture4,
+      chart: Array(15).fill({ pv: 142 }),
     },
     {
       id: 6,
@@ -68,6 +72,7 @@ export default function CoinInformation({
       price: 0.85,
       prevPrice: 0.85,
       picture: picture2,
+      chart: Array(15).fill({ pv: 0.85 }),
     },
     {
       id: 3,
@@ -79,6 +84,7 @@ export default function CoinInformation({
       price: 5112,
       prevPrice: 5112,
       picture: picture3,
+      chart: Array(15).fill({ pv: 5112 }),
     },
   ]);
 
@@ -87,27 +93,36 @@ export default function CoinInformation({
       setCoins((prevCoins) => {
         let totalCryptoNewPrice = 0;
         const updatedCoins = prevCoins.map((coin) => {
-          const randomPrice = Math.random() * 2 - 0.5;
-          const newPrice = Math.max(2, coin.price + randomPrice);
+          const randomPrice = Math.random() * 2 - 1.2;
+          const newPrice = Math.max(0.5, coin.price + randomPrice);
 
           totalCryptoNewPrice += coin.number * newPrice;
+
+          const newChart = [
+            ...coin.chart,
+            { pv: Number(newPrice.toFixed(2)) },
+          ].slice(-15);
 
           return {
             ...coin,
             prevPrice: coin.price,
             price: Number(newPrice.toFixed(2)),
+            chart: newChart,
           };
         });
 
         const difference = totalCryptoNewPrice - purchasedCurrency;
-        handleMarket(0, difference);
+
+        const currentTotalPortfolioValue = balance + totalCryptoNewPrice;
+
+        handleMarket(0, difference, currentTotalPortfolioValue);
 
         return updatedCoins;
       });
     }, 2000);
-    return () => clearInterval(timeChangePrice);
-  }, [purchasedCurrency]);
 
+    return () => clearInterval(timeChangePrice);
+  }, [purchasedCurrency, balance]);
   // MARKET CRASH
   // useEffect(() => {
   //   const marketCrash = setInterval(() => {
@@ -154,6 +169,7 @@ export default function CoinInformation({
             price={item.price}
             prevPrice={item.prevPrice}
             picture={item.picture}
+            chart={item.chart}
             onBuy={() => buyCoin(item.id, item.price)}
             onSell={() => sellCoin(item.id, item.price)}
           />
